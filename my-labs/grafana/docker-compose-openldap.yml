@@ -1,0 +1,16 @@
+version: '2.1'
+
+services:
+  openldap:
+    container_name: ldap
+    build: ../openldap/
+    environment:
+      SLAPD_PASSWORD: grafana
+      SLAPD_DOMAIN: grafana.org
+      SLAPD_ADDITIONAL_MODULES: memberof
+    ports:
+      - "389:389"
+    networks: ['bridgenet']
+
+networks: {bridgenet: {}}
+

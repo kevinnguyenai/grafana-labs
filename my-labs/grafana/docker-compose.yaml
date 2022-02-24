@@ -1,0 +1,23 @@
+version: '2.1'
+
+services:
+  grafana:
+    image: grafana/grafana:${grafana_version}
+    ports:
+      - "3001:3000"
+    volumes:
+      - "./provisioning/dashboards/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
+      - "./provisioning/dashboards:/usr/share/grafana/devenv/dev-dashboards"
+      - "./provisioning/datasources/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
+      - "./provisioning/grafana.ini:/etc/grafana/grafana.ini"
+      - "./provisioning/ldap.toml:/etc/grafana/ldap.toml"
+    environment:
+      GF_RENDERING_SERVER_URL: http://renderer:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+    networks: ['bridgenet']
+
+  renderer:
+    image: grafana/grafana-image-renderer:latest
+    networks: ['bridgenet']
+
+networks: {bridgenet: {}}
