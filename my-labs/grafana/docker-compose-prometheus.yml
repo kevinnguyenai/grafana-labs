@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  prometheus:
+    build: ../prometheus
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    networks: ['bridgenet']
+
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - "9100:9100"
+    networks: ['bridgenet']
+
+  fake-prometheus-data:
+    image: grafana/fake-data-gen
+    ports:
+      - "9091:9091"
+    environment:
+      FD_DATASOURCE: prom
+    networks: ['bridgenet']
+
+  alertmanager:
+    image: quay.io/prometheus/alertmanager
+    ports:
+      - "9093:9093"
+    networks: ['bridgenet']
+
+  prometheus-random-data:
+    build: ../prometheus_random_data
+    ports:
+      - "8082:8080"
+    networks: ['bridgenet']
+
+networks: {bridgenet: {}}
